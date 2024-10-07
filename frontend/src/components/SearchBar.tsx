@@ -2,15 +2,17 @@ import { useState } from "react"
 
 interface SearchBarProps {
     searchContent: string
+    onSearch: (query: string) => void
 }
 
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchContent }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ searchContent, onSearch }) => {
     const [search, setSearch] = useState<string>(searchContent)
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
-        setSearch(e.target.value)
+        const value = e.target.value
+        setSearch(value)
+        onSearch(value)
     }
 
     return (
@@ -21,7 +23,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchContent }) => {
                 </div>
                 <input
                     type="text"
-                    placeholder="Search"
+                    placeholder="Search movies..."
                     value={search}
                     onChange={handleSearchChange}
                     className="w-full pl-10 px-2 py-1 text-gray-500 rounded-md focus:outline-none focus:ring focus:ring-indigo-100"

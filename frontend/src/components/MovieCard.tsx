@@ -32,7 +32,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
     }
 
     return (
-        <div className="w-65 mx-4 my-4 rounded-lg overflow-hidden shawdow-lg bg-white border border-gray-300">
+        <div className="w-64 mx-4 my-4 rounded-lg overflow-hidden shawdow-lg bg-white border border-gray-300">
 
             {img && (
                 <img
@@ -51,22 +51,22 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         {expanded ? "-" : "+"}
                     </button>
                     <button onClick={handleFavoriteChange} className="text-gray-500 text-2xl focus:outline-none">
-                        {favorite === true ? "🤍" : "♡"}
+                        {favorite === true ? "🩶" : "♡"}
                     </button>
                 </div>
             </div>
 
             <div className="flex items-center align-center text-gray-700 text-sm px-6">
                 |
-                <h5 className="mr-2 px-2 text-gray-500 text-xs">
+                <h5 className="mr-1 px-1 text-gray-500 text-xs">
                     {year}
                 </h5>
                 |
-                <h5 className="mr-2 px-2 text-gray-500 text-xs">
+                <h5 className="mr-1 px-2 text-gray-500 text-xs">
                     {duration} mins
                 </h5>
                 |
-                <h5 className="mr-2 px-2 text-gray-500 text-xs">
+                <h5 className="mr-1 px-1 text-gray-500 text-xs">
                     {rating && (
                         <>{rating}</>
                     )} / 10 ★

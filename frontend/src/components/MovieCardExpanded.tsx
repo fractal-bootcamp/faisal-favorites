@@ -53,7 +53,7 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
                         {expanded ? "-" : "+"}
                     </button>
                     <button onClick={handleFavoriteChange} className="text-gray-500 text-2xl focus:outline-none">
-                        {favorite === true ? "🤍" : "♡"}
+                        {favorite === true ? "🩶" : "♡"}
                     </button>
                 </div>
             </div>
