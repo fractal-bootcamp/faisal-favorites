@@ -2,11 +2,11 @@ import { useState } from "react";
 import MovieCardExpanded from "./MovieCardExpanded.js"
 
 interface MovieCardProps {
+    img?: string
     title: string
+    favorite: boolean
     year: number
     duration: number
-    img?: string
-    favorite: boolean
     rating?: number
     tags?: string[]
 }
@@ -68,8 +68,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 |
                 <h5 className="mr-2 px-2 text-gray-500 text-xs">
                     {rating && (
-                        <>{rating} / 10 ★</>
-                    )}
+                        <>{rating}</>
+                    )} / 10 ★
                 </h5>
             </div>
 

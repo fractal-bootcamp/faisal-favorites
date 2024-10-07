@@ -70,8 +70,8 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
                 |
                 <h5 className="mr-2 px-2 text-gray-500 text-xs">
                     {rating && (
-                        <>{rating} / 10 ★</>
-                    )}
+                        <>{rating}</>
+                    )} / 10 ★
                 </h5>
             </div>
 
