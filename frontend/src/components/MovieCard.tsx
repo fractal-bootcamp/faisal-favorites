@@ -32,7 +32,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
     }
 
     return (
-        <div className="max-w-xs mx-4 my-4 rounded-lg overflow-hidden shawdow-lg bg-white border border-gray-300">
+        <div className="w-65 mx-4 my-4 rounded-lg overflow-hidden shawdow-lg bg-white border border-gray-300">
 
             {img && (
                 <img
@@ -43,10 +43,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
             )}
 
             <div className=" flex justify-between items-center px-6 py-3">
-                <h1 className="font-bold text-xl">
+                <h1 className="font-semibold text-xl truncate max-w-[10rem]">
                     {title}
                 </h1>
-                <div className="flex  justify-center items-center space-x-1">
+                <div className="flex justify-center items-center space-x-1">
                     <button onClick={handleExpandedChange} className="text-white text-center text-m bg-gray-500 w-6 h-6 rounded-full focus:outline-none">
                         {expanded ? "-" : "+"}
                     </button>
@@ -73,7 +73,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 </h5>
             </div>
 
-            <div className="px-6 py-3">
+            <div className="px-6 py-3 overflow-hidden">
                 <div className="flex flex-wrap">
                     {tags && (
                         tags.map((tag, index) => (

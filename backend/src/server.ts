@@ -33,7 +33,6 @@ app.post("/movies", async (_req: Request, res: Response) => {
         })
         res.json({ message: "Movies successfully added!", count: createdMovies.count })
     } catch (err) {
-        console.error(err);
         res.status(500).json({ err: "Unable to create movies" })
     }
 })
