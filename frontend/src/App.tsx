@@ -2,7 +2,7 @@ import { useState } from 'react'
 import MovieCard from './components/MovieCard.js'
 import { Page } from './stories/Page.js'
 import SearchBar from './components/SearchBar.js'
-import godFather from "./assets/godFather.png"
+import movieClip from "./assets/movieClip.png"
 
 
 
@@ -16,13 +16,13 @@ const App: React.FC = () => {
       />
 
       <MovieCard
-        title='The Godfather'
-        img={godFather}
-        year={1972}
-        duration={175}
+        title={"Movie"}
+        img={movieClip}
+        year={0}
+        duration={0}
         favorite={false}
-        rating={9.2}
-        tags={["Action", "Crime"]}
+        rating={0}
+        tags={[]}
       />
     </div>
   )
