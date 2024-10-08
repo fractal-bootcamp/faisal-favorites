@@ -7,11 +7,8 @@ interface SearchBarProps {
 
 
 const SearchBar: React.FC<SearchBarProps> = ({ searchContent, onSearch }) => {
-    const [search, setSearch] = useState<string>(searchContent)
-
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
-        setSearch(value)
         onSearch(value)
     }
 
@@ -24,7 +21,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchContent, onSearch }) => {
                 <input
                     type="text"
                     placeholder="Search movies..."
-                    value={search}
+                    value={searchContent}
                     onChange={handleSearchChange}
                     className="w-full pl-10 px-2 py-1 text-gray-500 rounded-md focus:outline-none focus:ring focus:ring-indigo-100"
                 />

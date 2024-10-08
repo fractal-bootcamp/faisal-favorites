@@ -20,7 +20,10 @@ const meta: Meta<typeof MovieCardExpanded> = {
         duration: 175,
         rating: 9.2,
         description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-        tags: ["Action", "Crime"]
+        tags: ["Action", "Crime"],
+        onClose() {
+
+        },
     },
 }
 export default meta;
@@ -36,6 +39,9 @@ export const WithMovieContent: Story = {
         duration: 175,
         rating: 9.2,
         description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-        tags: ["Action", "Crime"]
+        tags: ["Action", "Crime"],
+        onClose() {
+
+        },
     },
 }

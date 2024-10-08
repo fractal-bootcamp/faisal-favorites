@@ -12,7 +12,10 @@ const meta: Meta<typeof SearchBar> = {
         layout: 'fullscreen',
     },
     args: {
-        searchContent: ""
+        searchContent: "",
+        onSearch(query) {
+            query
+        },
     },
 }
 export default meta;
@@ -21,6 +24,9 @@ type Story = StoryObj<typeof SearchBar>;
 
 export const WithSearchContent: Story = {
     args: {
-        searchContent: ""
+        searchContent: "",
+        onSearch(query) {
+            query
+        },
     },
 }
