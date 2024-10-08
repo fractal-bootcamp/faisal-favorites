@@ -3,7 +3,6 @@ import axios from "axios"
 import MovieCard from './components/MovieCard.js'
 import SearchBar from './components/SearchBar.js'
 import movieClip from "./assets/movieClip.png"
-import { query } from 'express'
 
 interface MovieProps {
   img?: string
@@ -60,6 +59,7 @@ const App: React.FC = () => {
             duration={movie.duration}
             favorite={movie.favorite}
             rating={movie.rating}
+            description={movie.description}
             tags={movie.tags}
           />
         ))}
