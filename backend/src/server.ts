@@ -15,9 +15,28 @@ app.get("/", (_req: Request, res: Response) => {
 })
 
 // Route to fetch movies from db
-app.get("/movies", async (_req: Request, res: Response) => {
+app.get("/movies", async (req: Request, res: Response) => {
+    const { query } = req.query
+    const searchQuery = Array.isArray(query) ? query[0] : query || ""
     try {
-        const movies = await prisma.movie.findMany()
+        let movies
+
+        if (searchQuery) {
+            movies = await prisma.movie.findMany({
+                where: {
+                    OR: [
+                        {
+                            title: {
+                                contains: searchQuery,
+                                mode: "insensitive" // for case-insensitive search
+                            },
+                        },
+                    ],
+                },
+            })
+        } else {
+            movies = await prisma.movie.findMany() // return all movies if there is no search
+        }
         res.json(movies)
     } catch (err) {
         res.status(500).json({ err: "Unable to fetch movies" })

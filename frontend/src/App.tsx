@@ -1,8 +1,9 @@
-import { SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from "axios"
 import MovieCard from './components/MovieCard.js'
 import SearchBar from './components/SearchBar.js'
 import movieClip from "./assets/movieClip.png"
+import { query } from 'express'
 
 interface MovieProps {
   img?: string
@@ -19,22 +20,37 @@ const SERVER_URL = "http://localhost:3000"
 
 const App: React.FC = () => {
   const [movies, setMovies] = useState<MovieProps[]>([])
+  const [searchContent, setSearchContent] = useState<string>("")
 
-  useEffect(() => {
-    axios.get(`${SERVER_URL}/movies`)
-      .then((res: { data: SetStateAction<MovieProps[]> }) => {
+  // fetch movies based on search
+  const fetchMovies = (query: string = "") => {
+    axios.get<MovieProps[]>(`${SERVER_URL}/movies`, {
+      params: { query } // Passing the search term as query param
+    })
+      .then((res) => {
         setMovies(res.data)
       })
       .catch((err: any) => console.error("Error fetching movies:", err))
+  }
+
+  // fetch all movies
+  useEffect(() => {
+    fetchMovies() // fetching all movies when component mounts
   }, [])
+
+  const handleSearchContentChange = (query: string) => {
+    setSearchContent(query) // updates search state
+    fetchMovies(query) // fetch movies bas on search
+  }
 
   return (
     <div>
 
       <SearchBar
-        searchContent={''}
+        searchContent={searchContent}
+        onSearch={handleSearchContentChange}
       />
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center gap-1'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 justify-items-center gap-1'>
         {movies.map((movie, index) => (
           <MovieCard
             key={index}
