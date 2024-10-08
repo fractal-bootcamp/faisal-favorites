@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios"
 interface MovieCardExpandedProps {
+    movieId: string // Add id to make API request
     img?: string
     title: string
     favorite: boolean
@@ -12,7 +13,10 @@ interface MovieCardExpandedProps {
     onClose: () => void
 }
 
+const SERVER_URL = "http://localhost:3000"
+
 const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
+    movieId,
     img,
     title,
     favorite: favoriteProp,
@@ -28,20 +32,55 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
     const [tags, setTags] = useState<string[]>(initialTags || []) // Store tags in state
     const [newTag, setNewTag] = useState<string>("") // Track new tags
 
+    useEffect(() => {
+        axios.get(`${SERVER_URL}/movies/${movieId}/tags`)
+            .then((res) => {
+                setTags(res.data.tags) // Update tags from db
+            })
+            .catch((err) => {
+                console.error("Error fetching updating tags:", err)
+            })
+    }, [movieId])
+
     const handleFavoriteChange = () => {
         setFavorite((prevFavorite) => !prevFavorite)
     }
 
     const handleAddingTags = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && newTag.trim()) {
-            setTags([...tags, newTag.trim()])
+            const previousTags = [...tags]
+            const updatedTags = [...tags, newTag.trim()]
+            setTags(updatedTags)
             setNewTag("")
+
+            // API request to update tags in db
+            axios
+                .put(`${SERVER_URL}/movies/${movieId}/tags`, { tags: updatedTags })
+                .then((res) => {
+                    console.log("Tags updated successfully:", res.data)
+                })
+                .catch((err) => {
+                    console.error("Error updating tags:", err);
+                    setTags(previousTags) // Do nothing if updating failed
+                })
         }
     }
 
-    const handleDeletingTags = (index: number) => {
+    const handleDeletingTags = (index: number, tag: string) => {
+        const prevTags = [...tags]
         const updatedTags = tags.filter((_, i) => i !== index)
-        setTags(updatedTags)
+
+        //API request to delete tags in db
+        axios
+            .delete(`${SERVER_URL}/movies/${movieId}/tags/${tag}`)
+            .then((res) => {
+                console.log("Tag successfully deleted:", res.data);
+                setTags(updatedTags)
+            })
+            .catch(err => {
+                console.error("Error deleting tag:", err)
+                setTags(prevTags)
+            })
     }
 
     return (
@@ -51,7 +90,7 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
                 <img
                     src={img}
                     alt={title}
-                    className="w-full h-64 object-cover rounded-lg"
+                    className="w-full h-64 object-cover rounded-lg border-b border-gray-500"
                 />
             )}
 
@@ -97,7 +136,7 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
                     {tags.map((tag, index) => (
                         <div key={index} className="relative inline-block bg-gray-300 rounded-full px-3 py-1 mr-2 mb-1 text-xs font-medium text-gray-700 group">
                             #{tag}
-                            <button onClick={() => handleDeletingTags(index)} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gray-100 text-gray-500 text-xs px-1 focus:outline-none hidden group-hover:block">
+                            <button onClick={() => handleDeletingTags(index, tag)} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gray-100 text-gray-500 text-xs px-1 focus:outline-none hidden group-hover:block">
                                 x
                             </button>
                         </div>
