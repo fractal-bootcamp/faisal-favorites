@@ -5,7 +5,7 @@ import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-react"
 import './index.css'
 
 import App from './App.js'
-import RootLayout from "./RootLayout.js"
+import RootLayout from "./components/RootLayout.js";
 import SignInPage from "./components/pages/SignInPage.js"
 import SignUpPage from "./components/pages/SignUpPage.js"
 import FavoritesPage from './components/pages/FavoritesPage.js'
@@ -24,8 +24,6 @@ const router = createBrowserRouter([
 
       // Public routes
       { path: "/", element: <App /> },
-      { path: "/sign-in", element: <SignInPage /> },
-      { path: "/sign-up", element: <SignUpPage /> },
       // Protected routes
       {
         path: "/movies/favorites", element: (
@@ -47,11 +45,3 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     </ClerkProvider>
   </React.StrictMode>
 );
-
-/*
-<React.StrictMode>
-   <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-      <RouterProvider router={router} />
-    </ClerkProvider>
-  </React.StrictMode>
-  */

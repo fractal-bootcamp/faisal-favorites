@@ -3,6 +3,7 @@ import axios from "axios"
 import MovieCard from '../MovieCard.js'
 import SearchBar from '../SearchBar.js'
 import movieClip from "../../assets/movieClip.png"
+import { useFavorites } from "../../hooks/useFavorites.js"
 
 interface MovieProps {
     id: string
@@ -21,6 +22,9 @@ const SERVER_URL = "http://localhost:3000"
 const MoviesPage: React.FC = () => {
     const [movies, setMovies] = useState<MovieProps[]>([])
     const [searchContent, setSearchContent] = useState<string>("")
+
+    // get favorites and favorite action from custom hook
+    const { favorites, addFavorite, removeFavorite } = useFavorites()
 
     // fetch movies based on search
     const fetchMovies = (query: string = "") => {
@@ -43,9 +47,15 @@ const MoviesPage: React.FC = () => {
         fetchMovies(query) // fetch movies bas on search
     }
 
+    // utility function
+    const isFavorite = (movieId: string) => {
+        return (
+            favorites.some((fav) => fav.id === movieId)
+        )
+    }
+
     return (
         <div>
-
             <SearchBar
                 searchContent={searchContent}
                 onSearch={handleSearchContentChange}
@@ -59,10 +69,13 @@ const MoviesPage: React.FC = () => {
                         img={movie.img || movieClip}
                         year={movie.year}
                         duration={movie.duration}
-                        favorite={movie.favorite}
+                        favorite={isFavorite(movie.id)}
                         rating={movie.rating}
                         description={movie.description}
                         tags={movie.tags}
+                        onFavoriteToggle={() => {
+                            isFavorite(movie.id) ? removeFavorite(movie.id) : addFavorite(movie.id)
+                        }}
                     />
                 ))}
 

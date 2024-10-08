@@ -27,5 +27,16 @@ model Movie {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  users User[] @relation("Favorites")
+
   @@fulltext([title])
+}
+
+model User {
+  id          String  @id @default(uuid())
+  clerkUserId String  @unique
+  email       String  @unique
+  firstName   String
+  lastName    String
+  favorite    Movie[] @relation("Favorites")
 }

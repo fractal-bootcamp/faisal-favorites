@@ -29,6 +29,7 @@ app.get("/protected", requireAuth({ signInUrl: "/sign-in" }), async (req: Reques
     }
 })
 
+///////// GET ROUTES /////////
 // Route for signin
 app.get("/sign-in", (req: Request, res: Response) => {
     res.render("sign-in")
@@ -83,6 +84,26 @@ app.get("/movies/:id/tags", async (req: Request, res: Response) => {
     }
 })
 
+// Route to fetch favorite movies for logged in users
+app.get("/movies/favorites", requireAuth(), async (req: Request, res: Response) => {
+    const { userId } = req.auth
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { clerkUserId: userId },
+            include: { favorite: true },
+        })
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" })
+        }
+        res.json(user?.favorite || [])
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch favorites" })
+    }
+})
+
+///////// POST ROUTES /////////
 // Route to create movies
 app.post("/movies", async (_req: Request, res: Response) => {
     try {
@@ -97,6 +118,40 @@ app.post("/movies", async (_req: Request, res: Response) => {
     }
 })
 
+// Route to add user movie favorites
+app.post("/movies/:id/favorites", requireAuth(), async (req: Request, res: Response) => {
+    const { userId } = req.auth
+    const { id: movieId } = req.params
+
+    try {
+        const user = prisma.user.upsert({
+            where: { clerkUserId: userId },
+            update: {},
+            create: {
+                clerkUserId: userId,
+                email: req.auth?.user?.primaryEmailAddressId,
+                firstName: req.auth?.user?.firstName,
+                lastName: req.auth?.user?.lastName,
+            },
+        })
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                favorite: {
+                    connect: { id: movieId },
+                },
+            },
+            include: { favorite: true },
+        })
+        res.json(updatedUser.favorite)
+
+    } catch (err) {
+        res.status(500).json({ error: "Failed to favorite movie" })
+    }
+})
+
+///////// PUT ROUTES /////////
 // Update movie tags
 app.put("/movies/:id/tags", async (req: Request, res: Response) => {
     const { id } = req.params
@@ -114,6 +169,7 @@ app.put("/movies/:id/tags", async (req: Request, res: Response) => {
     }
 })
 
+///////// DELETE ROUTES /////////
 // Delete movie tags
 app.delete("/movies/:id/tags/:tag", async (req: Request, res: Response) => {
     const { id, tag } = req.params
@@ -140,6 +196,37 @@ app.delete("/movies/:id/tags/:tag", async (req: Request, res: Response) => {
 
     } catch (err) {
         res.status(500).json({ error: "Failed to delete the tag" })
+    }
+})
+
+// Remove a favorite
+app.delete("/movies/:id/favorites", requireAuth(), async (req: Request, res: Response) => {
+    const { userId } = req.auth
+    const { id: movieId } = req.params
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { clerkUserId: userId },
+            include: { favorite: true },
+        })
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" })
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { clerkUserId: userId },
+            data: {
+                favorite: {
+                    disconnect: { id: movieId },
+                },
+            },
+            include: { favorite: true }
+        })
+        res.json(updatedUser.favorite)
+
+    } catch (err) {
+        res.status(500).json({ error: "Failed to remove favorites" })
     }
 })
 
