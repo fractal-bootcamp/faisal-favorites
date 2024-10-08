@@ -2,6 +2,7 @@ import { useState } from "react";
 import MovieCardExpanded from "./MovieCardExpanded.js"
 
 interface MovieCardProps {
+    id: string
     img?: string
     title: string
     favorite: boolean
@@ -13,6 +14,7 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({
+    id,
     img,
     title,
     favorite: favoriteProp,
@@ -38,6 +40,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
             {expanded && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <MovieCardExpanded
+                        movieId={id}
                         img={img}
                         title={title}
                         favorite={favorite}
@@ -76,7 +79,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                     </div>
                 </div>
 
-                <div className="flex items-center align-center text-gray-700 text-sm px-6">
+                <div className="flex items-center align-center text-gray-700 text-sm px-6 mb-5">
                     |
                     <h5 className="mr-1 px-1 text-gray-500 text-xs">
                         {year}
@@ -93,17 +96,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                     </h5>
                 </div>
 
-                <div className="px-6 py-3 overflow-hidden">
-                    <div className="flex flex-wrap">
-                        {tags && (
-                            tags.map((tag, index) => (
-                                <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 mr-1 mb-1 text-xs font-medium text-gray-700">
-                                    #{tag}
-                                </span>
-                            ))
-                        )}
-                    </div>
-                </div>
+
             </div >
         </>
     )

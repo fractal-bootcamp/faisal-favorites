@@ -38,8 +38,28 @@ app.get("/movies", async (req: Request, res: Response) => {
             movies = await prisma.movie.findMany() // return all movies if there is no search
         }
         res.json(movies)
+
     } catch (err) {
         res.status(500).json({ err: "Unable to fetch movies" })
+    }
+})
+
+// Route to fetch movie tags by id from db
+app.get("/movies/:id/tags", async (req: Request, res: Response) => {
+    const { id } = req.params
+
+    try {
+        const movie = await prisma.movie.findUnique({
+            where: { id },
+        })
+
+        if (!movie) {
+            return res.status(404).json({ error: "Movie not found" })
+        }
+        res.json({ tags: movie.tags })
+
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch movie" })
     }
 })
 
@@ -51,8 +71,55 @@ app.post("/movies", async (_req: Request, res: Response) => {
             skipDuplicates: true // Avoid dublicates
         })
         res.json({ message: "Movies successfully added!", count: createdMovies.count })
+
     } catch (err) {
         res.status(500).json({ err: "Unable to create movies" })
+    }
+})
+
+// Update movie tags
+app.put("/movies/:id/tags", async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { tags } = req.body
+
+    try {
+        const updatedMovie = await prisma.movie.update({
+            where: { id },
+            data: { tags },
+        })
+        res.json(updatedMovie)
+
+    } catch (err) {
+        res.status(500).json({ error: "Failed to update tags" })
+    }
+})
+
+// Delete movie tags
+app.delete("/movies/:id/tags/:tag", async (req: Request, res: Response) => {
+    const { id, tag } = req.params
+
+    try {
+        // Find movie to filter for tags
+        const movie = await prisma.movie.findUnique({
+            where: { id },
+        })
+
+        if (!movie) {
+            return res.status(404).json({ error: "Movie not found" })
+        }
+
+        // Filter tags to delete a tag
+        const updatedTags = movie.tags.filter((extag) => extag !== tag)
+
+        // Update the movie tags in db
+        const updatedMovie = await prisma.movie.update({
+            where: { id },
+            data: { tags: updatedTags },
+        })
+        res.json(updatedMovie)
+
+    } catch (err) {
+        res.status(500).json({ error: "Failed to delete the tag" })
     }
 })
 

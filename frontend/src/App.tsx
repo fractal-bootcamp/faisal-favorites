@@ -5,6 +5,7 @@ import SearchBar from './components/SearchBar.js'
 import movieClip from "./assets/movieClip.png"
 
 interface MovieProps {
+  id: string
   img?: string
   title: string
   favorite: boolean
@@ -50,9 +51,10 @@ const App: React.FC = () => {
         onSearch={handleSearchContentChange}
       />
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 justify-items-center gap-1'>
-        {movies.map((movie, index) => (
+        {movies.map((movie) => (
           <MovieCard
-            key={index}
+            key={movie.id}
+            id={movie.id}
             title={movie.title}
             img={movie.img || movieClip}
             year={movie.year}
