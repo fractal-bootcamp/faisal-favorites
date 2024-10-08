@@ -1,7 +1,9 @@
-import express, { Request, Response } from "express"
+import express, { Request, response, Response } from "express"
 import cors from "cors"
 import { movies } from "./movies-db"
 import { PrismaClient } from "@prisma/client"
+import { clerkMiddleware, clerkClient, requireAuth } from "@clerk/express"
+import "dotenv/config"
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -9,9 +11,27 @@ const prisma = new PrismaClient()
 
 app.use(express.json())
 app.use(cors({ origin: "*" }))
+app.use(clerkMiddleware())
 
 app.get("/", (_req: Request, res: Response) => {
     res.send("Alive")
+})
+
+// Route for logged in users
+app.get("/protected", requireAuth({ signInUrl: "/sign-in" }), async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.auth
+        const user = await clerkClient.users.getUser(userId)
+        return res.json({ user })
+
+    } catch (err) {
+        res.status(401).json({ error: "Unauthorized access." })
+    }
+})
+
+// Route for signin
+app.get("/sign-in", (req: Request, res: Response) => {
+    res.render("sign-in")
 })
 
 // Route to fetch movies from db

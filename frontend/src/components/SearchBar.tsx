@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 interface SearchBarProps {
     searchContent: string
     onSearch: (query: string) => void
