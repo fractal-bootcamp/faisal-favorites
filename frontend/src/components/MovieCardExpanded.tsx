@@ -32,6 +32,7 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
     const [tags, setTags] = useState<string[]>(initialTags || []) // Store tags in state
     const [newTag, setNewTag] = useState<string>("") // Track new tags
 
+    // Fetch updated tags from backend
     useEffect(() => {
         axios.get(`${SERVER_URL}/movies/${movieId}/tags`)
             .then((res) => {
@@ -43,8 +44,22 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
     }, [movieId])
 
     const handleFavoriteChange = () => {
-        setFavorite((prevFavorite) => !prevFavorite)
+        const endpoint = favorite
+            ? `${SERVER_URL}/movies/${movieId}/favorites`
+            : `${SERVER_URL}/movies/${movieId}/favorites`
+
+        const method = favorite ? "delete" : "post" // POST for adding, DELETE for removing
+
+        axios[method](endpoint)
+            .then(() => {
+                setFavorite((prevFavorite) => !prevFavorite)
+            })
+            .catch((err) => {
+                console.error("Error updating favorite state", err)
+            })
     }
+
+
 
     const handleAddingTags = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && newTag.trim()) {

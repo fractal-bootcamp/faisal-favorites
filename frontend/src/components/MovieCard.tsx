@@ -11,26 +11,23 @@ interface MovieCardProps {
     rating?: number
     description: string
     tags?: string[]
+    onFavoriteToggle: () => void
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({
     id,
     img,
     title,
-    favorite: favoriteProp,
+    favorite,
     year,
     duration,
     rating,
     description,
     tags,
+    onFavoriteToggle,
 }) => {
-
-    const [favorite, setFavorite] = useState<boolean>(favoriteProp)
     const [expanded, setExpanded] = useState<boolean>(false)
 
-    const handleFavoriteChange = () => {
-        setFavorite((prevFavorite) => !prevFavorite)
-    }
     const handleExpandedChange = () => {
         setExpanded((prevExpanded) => !prevExpanded)
     }
@@ -73,7 +70,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         <button onClick={handleExpandedChange} className="text-white text-center text-m bg-gray-500 w-6 h-6 rounded-full focus:outline-none">
                             {expanded ? "-" : "+"}
                         </button>
-                        <button onClick={handleFavoriteChange} className="text-gray-500 text-2xl focus:outline-none">
+                        <button onClick={onFavoriteToggle} className="text-gray-500 text-2xl focus:outline-none">
                             {favorite === true ? "🩶" : "♡"}
                         </button>
                     </div>
