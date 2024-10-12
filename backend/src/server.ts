@@ -3,6 +3,7 @@ import cors from "cors"
 import { movies } from "./movies-db"
 import { PrismaClient } from "@prisma/client"
 import { clerkMiddleware, clerkClient, requireAuth, getAuth } from "@clerk/express"
+import { authMiddleware } from "./middlesware"
 import "dotenv/config"
 
 const app = express()
@@ -118,37 +119,6 @@ app.post("/movies", async (_req: Request, res: Response) => {
         res.status(500).json({ err: "Unable to create movies" })
     }
 })
-
-const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = getAuth(req)
-    if (!userId) {
-        res.status(500).json({ error: "User not logged in" })
-        return;
-    }
-
-    const clerkUser = await clerkClient.users.getUser(userId)
-
-    const user = await prisma.user.findFirst({
-        where: { clerkUserId: userId }
-    })
-
-    req.user = user;
-
-    if (!user) {
-        req.user = await prisma.user.upsert({
-            where: { clerkUserId: userId },
-            update: {},
-            create: {
-                clerkUserId: userId,
-                email: clerkUser?.primaryEmailAddress?.emailAddress,
-                firstName: clerkUser?.firstName,
-                lastName: clerkUser?.lastName,
-            },
-        })
-    }
-
-    next();
-}
 
 // Route to add user movie favorites
 app.post("/movies/:id/favorites", authMiddleware, async (req: Request, res: Response) => {
