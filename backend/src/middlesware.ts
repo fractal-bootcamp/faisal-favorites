@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { getAuth, clerkClient } from "@clerk/express";
-import { prismaClient } from "../prisma";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient()
