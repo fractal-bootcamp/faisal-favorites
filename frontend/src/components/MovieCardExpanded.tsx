@@ -99,7 +99,7 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
     }
 
     return (
-        <div className="w-full max-w-lg mc-auto rounded-lg shawdow-lg border border-gray-300 z-50 relative bg-white">
+        <div className="flex flex-col w-full max-w-lg mx-auto rounded-lg shawdow-lg border border-gray-300 z-50 relative bg-white">
 
             {img && (
                 <img
@@ -109,44 +109,46 @@ const MovieCardExpanded: React.FC<MovieCardExpandedProps> = ({
                 />
             )}
 
-            <div className=" flex justify-between items-center px-6 py-3">
-                <h1 className="font-bold text-xl">
-                    {title}
-                </h1>
-                <div className="flex  justify-center items-center space-x-1">
-                    <button onClick={onClose} className="text-white text-center text-m bg-gray-500 w-6 h-6 rounded-full focus:outline-none">
-                        -
-                    </button>
-                    <button onClick={handleFavoriteChange} className="text-gray-500 text-2xl focus:outline-none">
-                        {favorite === true ? "🩶" : "♡"}
-                    </button>
+            <div className="flex-grow">
+                <div className="flex justify-between items-center px-6 py-3">
+                    <h1 className="font-bold text-xl">
+                        {title}
+                    </h1>
+                    <div className="flex justify-center items-center space-x-1">
+                        <button onClick={onClose} className="text-white text-center text-m bg-gray-500 w-6 h-6 rounded-full focus:outline-none">
+                            -
+                        </button>
+                        <button onClick={handleFavoriteChange} className="text-gray-500 text-2xl focus:outline-none">
+                            {favorite === true ? "🩶" : "♡"}
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex items-center align-center text-gray-700 text-sm px-6">
+                    |
+                    <h5 className="mr-2 px-2 text-gray-500 text-xs">
+                        {year}
+                    </h5>
+                    |
+                    <h5 className="mr-2 px-2 text-gray-500 text-xs">
+                        {duration} mins
+                    </h5>
+                    |
+                    <h5 className="mr-2 px-2 text-gray-500 text-xs">
+                        {rating && (
+                            <>{rating}</>
+                        )} / 10 ★
+                    </h5>
+                </div>
+
+                <div className="px-6 py-2">
+                    <p className="text-gray-500 text-sm">
+                        {description}
+                    </p>
                 </div>
             </div>
 
-            <div className="flex items-center align-center text-gray-700 text-sm px-6">
-                |
-                <h5 className="mr-2 px-2 text-gray-500 text-xs">
-                    {year}
-                </h5>
-                |
-                <h5 className="mr-2 px-2 text-gray-500 text-xs">
-                    {duration} mins
-                </h5>
-                |
-                <h5 className="mr-2 px-2 text-gray-500 text-xs">
-                    {rating && (
-                        <>{rating}</>
-                    )} / 10 ★
-                </h5>
-            </div>
-
-            <div className="px-6 py-2">
-                <p className="text-gray-500 text-sm">
-                    {description}
-                </p>
-            </div>
-
-            <div className="px-6 py-2 mb-1 items-center">
+            <div className="px-6 py-2 mb-1 items-center mt-auto">
                 <div className="flex flex-wrap">
                     {tags.map((tag, index) => (
                         <div key={index} className="relative inline-block bg-gray-300 rounded-full px-3 py-1 mr-2 mb-1 text-xs font-medium text-gray-700 group">

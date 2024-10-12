@@ -74,6 +74,7 @@ const MoviesPage: React.FC = () => {
                         description={movie.description}
                         tags={movie.tags}
                         onFavoriteToggle={() => {
+                            console.log('Movie ID being added/removed:', movie.id)
                             isFavorite(movie.id) ? removeFavorite(movie.id) : addFavorite(movie.id)
                         }}
                     />
