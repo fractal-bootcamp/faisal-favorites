@@ -8,7 +8,7 @@ const FavoritesPage: React.FC = () => {
     return (
         <div>
             <h1 className="text-center text-2xl font-bold my-4">Your Favorite Movies</h1>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 justify-items-center gap-1'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 my-6 justify-items-center gap-8'>
                 {favorites.length > 0 ? (
                     favorites.map((movie) => (
                         <MovieCardExpanded

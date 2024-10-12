@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { useAuth } from "@clerk/clerk-react"
 
 const SERVER_URL = "http://localhost:3000"
 
@@ -15,13 +16,34 @@ interface FavoriteMovieProp {
     tags?: string[]
 }
 
+const authedAxios = axios;
+
+const useAuthenticatedAxios = () => {
+    const { getToken } = useAuth()
+
+    useEffect(() => {
+        authedAxios.interceptors.request.use(async config => {
+            const token = await getToken()
+            config.headers = {
+                ...config.headers,
+                Authorization: token
+            }
+            return config
+        })
+    }, [])
+
+    return authedAxios
+
+}
+
 export const useFavorites = () => {
     const [favorites, setFavorites] = useState<FavoriteMovieProp[]>([])
+    const myAxios = useAuthenticatedAxios()
 
     // Fetch favorite movies for logged-in user
     const fetchFavorites = async () => {
         try {
-            const response = await axios.get<FavoriteMovieProp[]>(`${SERVER_URL}/movies/favorites`);
+            const response = await myAxios.get<FavoriteMovieProp[]>(`${SERVER_URL}/movies/favorites`);
             const favoriteData = response.data || []; // Ensure data is always an array
             setFavorites(Array.isArray(favoriteData) ? favoriteData : []); // Check if it's an array
         } catch (error) {
@@ -33,7 +55,7 @@ export const useFavorites = () => {
     // Add a movie to favorites
     const addFavorite = async (movieId: string) => {
         try {
-            await axios.post(`${SERVER_URL}/movies/${movieId}/favorites`);
+            await myAxios.post(`${SERVER_URL}/movies/${movieId}/favorites`, undefined);
             setFavorites((prevFavorites) => [...prevFavorites, { id: movieId }]); // Update UI
         } catch (error) {
             console.error("Error adding favorite:", error);
@@ -43,7 +65,8 @@ export const useFavorites = () => {
     // Remove a movie from favorites
     const removeFavorite = async (movieId: string) => {
         try {
-            await axios.delete(`${SERVER_URL}/movies/${movieId}/favorites`);
+            const deleteUrl = `${SERVER_URL}/movies/${movieId}/favorites`
+            await myAxios.delete(deleteUrl);
             setFavorites((prevFavorites) => prevFavorites.filter((fav) => fav.id !== movieId)); // Update UI
         } catch (error) {
             console.error("Error removing favorite:", error);

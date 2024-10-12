@@ -1,8 +1,9 @@
-import express, { Request, response, Response } from "express"
+import express, { NextFunction, Request, response, Response } from "express"
 import cors from "cors"
 import { movies } from "./movies-db"
 import { PrismaClient } from "@prisma/client"
-import { clerkMiddleware, clerkClient, requireAuth } from "@clerk/express"
+import { clerkMiddleware, clerkClient, requireAuth, getAuth } from "@clerk/express"
+import { authMiddleware } from "./middlesware"
 import "dotenv/config"
 
 const app = express()
@@ -97,6 +98,7 @@ app.get("/movies/favorites", requireAuth(), async (req: Request, res: Response) 
         if (!user) {
             return res.status(404).json({ error: "User not found" })
         }
+        console.log("GETTING FAVS", user.favorite)
         res.json(user?.favorite || [])
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch favorites" })
@@ -119,24 +121,15 @@ app.post("/movies", async (_req: Request, res: Response) => {
 })
 
 // Route to add user movie favorites
-app.post("/movies/:id/favorites", requireAuth(), async (req: Request, res: Response) => {
-    const { userId } = req.auth
+app.post("/movies/:id/favorites", authMiddleware, async (req: Request, res: Response) => {
     const { id: movieId } = req.params
+    const user = req.user
+
+    console.log("middleware of user", user)
 
     try {
-        const user = prisma.user.upsert({
-            where: { clerkUserId: userId },
-            update: {},
-            create: {
-                clerkUserId: userId,
-                email: req.auth?.user?.primaryEmailAddressId,
-                firstName: req.auth?.user?.firstName,
-                lastName: req.auth?.user?.lastName,
-            },
-        })
-
         const updatedUser = await prisma.user.update({
-            where: { id: userId },
+            where: { id: user.id },
             data: {
                 favorite: {
                     connect: { id: movieId },
@@ -147,6 +140,7 @@ app.post("/movies/:id/favorites", requireAuth(), async (req: Request, res: Respo
         res.json(updatedUser.favorite)
 
     } catch (err) {
+        console.log(err.message)
         res.status(500).json({ error: "Failed to favorite movie" })
     }
 })
